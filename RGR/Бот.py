@@ -8,6 +8,12 @@ TOKEN = '8132989341:AAEdUisiBw8302kxPt75v5TL0Qenavs9SpE'
 # Создаем объект бота
 bot = telebot.TeleBot(TOKEN)
 
+# URL дашборда
+DASHBOARD_URL = 'http://127.0.0.1:8050/'
+
+# Кнопка для открытия дашборда
+dashboard_button = types.InlineKeyboardButton(text="Открыть дашборд", url=DASHBOARD_URL)
+
 # Список товаров для выбора
 products = {
     'диван': ['Диван "Комфорт"', 25000],
@@ -46,7 +52,11 @@ def main_menu_handler(message):
     elif message.text == '📦Оформление заказа':
         checkout(message)
     if message.text == '📊Статистика':
-       
+        file = open('newplot.png','rb')
+        bot.send_photo(message.chat.id, file)
+        keyboard = types.InlineKeyboardMarkup().add(dashboard_button)
+        bot.send_message(message.chat.id, "Нажмите на кнопку ниже, чтобы открыть дашборд:", reply_markup=keyboard)
+
     elif message.text == 'Очистить корзину':
         clear_cart(message)
 
@@ -95,4 +105,3 @@ def select_product(call):
     bot.send_message(call.message.chat.id, "Товар успешно добавлен в корзину.", reply_markup=main_menu)
 
 bot.polling(none_stop = True)
-
